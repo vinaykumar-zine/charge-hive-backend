@@ -1,0 +1,11 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/register
+            - Path=/auth/login
+          filters:
+            - RewritePath=/auth/(?<segment>.*), /auth/${segment}
