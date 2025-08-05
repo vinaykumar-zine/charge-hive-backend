@@ -1,4 +1,4 @@
-package com.vin.server;
+package com.charginghive.discovery;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

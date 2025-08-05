@@ -1,11 +1,20 @@
 spring:
   cloud:
     gateway:
-      routes:
-        - id: auth-service
-          uri: lb://AUTH-SERVICE
-          predicates:
-            - Path=/auth/register
-            - Path=/auth/login
-          filters:
-            - RewritePath=/auth/(?<segment>.*), /auth/${segment}
+      server:
+        webflux:
+          routes:
+            - id: test-service
+              uri: lb://TEST-SERVICE
+              predicates:
+                   - Path=/api/test/route/**
+              filters:
+                   - RewritePath=/api/test/route, /test/route
+
+
+            - id: auth-service
+              uri: lb://AUTH-SERVICE
+              predicates:
+                    - Path=/api/auth/**
+              filters:
+                    - RewritePath=/api/auth/(?<segment>.*), /auth/${segment}

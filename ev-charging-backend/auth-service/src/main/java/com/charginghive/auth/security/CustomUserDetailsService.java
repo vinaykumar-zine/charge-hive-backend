@@ -1,11 +1,11 @@
-package com.vin.server.security;
+package com.charginghive.auth.security;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.vin.server.entity.UserRegistration;
-import com.vin.server.repository.UserRepository;
+import com.charginghive.auth.entity.UserRegistration;
+import com.charginghive.auth.repository.UserRepository;
 
 import lombok.AllArgsConstructor;
 

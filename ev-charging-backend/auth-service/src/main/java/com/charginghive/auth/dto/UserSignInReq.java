@@ -1,18 +1,14 @@
-package com.vin.server.dto;
-
-import com.vin.server.entity.UserRole;
+package com.charginghive.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-public class UserRegistrationReq {
+public class UserSignInReq {
 
-	private String name;
 	private String email;
 	private String password;
-	private UserRole userRole;
 }

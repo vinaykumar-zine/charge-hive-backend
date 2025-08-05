@@ -1,4 +1,4 @@
-package com.vin.server;
+package com.charginghive.auth;
 
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;

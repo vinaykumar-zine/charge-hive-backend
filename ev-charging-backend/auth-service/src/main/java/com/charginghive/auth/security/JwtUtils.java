@@ -1,6 +1,5 @@
-package com.vin.server.security;
+package com.charginghive.auth.security;
 
-import java.security.Key;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -13,7 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import com.vin.server.entity.UserRegistration;
+import com.charginghive.auth.entity.UserRegistration;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -46,7 +45,7 @@ public class JwtUtils {
 		UserRegistration userPrincipal = (UserRegistration) authentication.getPrincipal();
 		
 		return Jwts.builder()
-				.subject(userPrincipal.getName())
+				.subject(userPrincipal.getId().toString())
 				.issuedAt(new Date())
 				.expiration(new Date(new Date().getTime() + jwtExpirationMs))
 				.claim("authorities", getAuthoritiesInString(userPrincipal.getAuthorities()))

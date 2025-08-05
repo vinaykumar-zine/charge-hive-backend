@@ -1,4 +1,4 @@
-package com.vin.server.dto;
+package com.charginghive.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserSignInReq {
-
-	private String email;
-	private String password;
+public class UserAdminDto {
+    Long id;
+    String name;
+    String email;
 }

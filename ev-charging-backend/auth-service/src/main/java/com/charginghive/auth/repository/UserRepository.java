@@ -1,11 +1,10 @@
-package com.vin.server.repository;
+package com.charginghive.auth.repository;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.vin.server.entity.UserRegistration;
-import java.util.List;
+import com.charginghive.auth.entity.UserRegistration;
 
 
 public interface UserRepository extends JpaRepository<UserRegistration, Long> {

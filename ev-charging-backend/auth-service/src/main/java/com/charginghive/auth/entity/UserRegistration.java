@@ -1,4 +1,4 @@
-package com.vin.server.entity;
+package com.charginghive.auth.entity;
 
 import java.util.Collection;
 import java.util.List;
