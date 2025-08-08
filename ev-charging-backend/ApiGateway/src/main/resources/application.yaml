@@ -4,12 +4,12 @@ spring:
       server:
         webflux:
           routes:
-            - id: test-service
-              uri: lb://TEST-SERVICE
+            - id: admin-service
+              uri: lb://ADMIN-SERVICE
               predicates:
-                   - Path=/api/test/route/**
+                   - Path=/api/admin/**
               filters:
-                   - RewritePath=/api/test/route, /test/route
+                   - RewritePath=/api/admin/(?<segment>.*), /admin/${segment}
 
 
             - id: auth-service
@@ -18,3 +18,10 @@ spring:
                     - Path=/api/auth/**
               filters:
                     - RewritePath=/api/auth/(?<segment>.*), /auth/${segment}
+
+            - id: STATION-SERVICE
+              uri: lb://STATION-SERVICE
+              predicates:
+                - Path=/api/stations/**
+              filters:
+                - RewritePath=/api/stations/(?<segment>.*), /stations/${segment}
