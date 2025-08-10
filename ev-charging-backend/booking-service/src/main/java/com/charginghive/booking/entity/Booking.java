@@ -3,6 +3,7 @@ package com.charginghive.booking.entity;
 import jakarta.persistence.*;
 import jdk.jfr.Timestamp;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Data
 @Table(name = "bookings")
+@Builder
 public class Booking {
 
     @Id
@@ -22,7 +24,7 @@ public class Booking {
     private Long id;
 
     private Long userId;
-    private Long StationId;
+    private Long stationId;
     private Long portId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
@@ -34,5 +36,12 @@ public class Booking {
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
+
+    public int getDuration() {
+        if (startTime != null && endTime != null) {
+            return (int) java.time.Duration.between(startTime, endTime).toMinutes();
+        }
+        return 0;
+    }
 
 }

@@ -5,11 +5,15 @@ package com.charginghive.auth.service;
 import com.charginghive.auth.dto.UserDto;
 import com.charginghive.auth.dto.UserEdirDto;
 import com.charginghive.auth.dto.UserResDto;
+import com.charginghive.auth.dto.ChangePasswordRequest;
+import com.charginghive.auth.dto.ForgotPasswordRequest;
+import com.charginghive.auth.dto.ResetPasswordRequest;
 import com.charginghive.auth.entity.UserRole;
 
 // Utility classes and Spring Framework dependencies
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,46 +27,60 @@ import com.charginghive.auth.security.JwtUtils;
 import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-@Service // Marks this class as a Spring Service component
-@Transactional // Ensures all public methods in this class are transactional by default
-@AllArgsConstructor // Lombok annotation to generate constructor with all final fields
+@Service
+@Transactional
+@AllArgsConstructor
 public class UserService {
 
-	private final UserRepository repository; // JPA repository for UserRegistration entity
-	private final PasswordEncoder passwordEncoder; // Used to encode passwords securely
-	private final ModelMapper modelMapper; // Used to convert between DTOs and entities
-	private final JwtUtils jwtUtils; // Custom utility class to generate JWT tokens
+	private final UserRepository repository;
+	private final PasswordEncoder passwordEncoder;
+	private final ModelMapper modelMapper;
+	private final JwtUtils jwtUtils;
+
+    // simple in-memory token stores for demo (replace with persistent store in production)
+    private final Map<String, Long> passwordResetTokens = new HashMap<>();
+    private final Map<String, Long> emailVerificationTokens = new HashMap<>();
 
 	/**
 	 * Registers a new user in the system.
 	 * @param credential UserRegistrationReq DTO containing user signup details.
 	 * @return Success or failure message based on outcome.
 	 */
-	public String saveUserDetails(UserRegistrationReq credential) {
-		String mesg = "user regestration failed!";
-		try {
-			// Logging raw password for debug purposes (not recommended in production)
-			// System.out.println("user passowrd is: " + credential.getPassword());
+	public UserDto saveUserDetails(UserRegistrationReq credential) {
+//		String mesg = "user regestration failed!";
+//		try {
+//			// Logging raw password for debug purposes (not recommended in production)
+//			// System.out.println("user passowrd is: " + credential.getPassword());
+//
+//			// Encode the password before storing it in DB
+//			credential.setPassword(passwordEncoder.encode(credential.getPassword()));
+//
+//			// Convert DTO to Entity and save to database
+//			UserRegistration dbUser = repository.save(modelMapper.map(credential, UserRegistration.class));
+//            return modelMapper.map(dbUser, UserDto.class);
 
-			// Encode the password before storing it in DB
-			credential.setPassword(passwordEncoder.encode(credential.getPassword()));
-			Optional<UserRegistration> user = repository.findByEmail(credential.getEmail());
-			// Convert DTO to Entity and save to database
-//			if(user.isPresent()) {   //it is prone to race condition!
-//				return mesg;
-//			}
-			repository.save(modelMapper.map(credential, UserRegistration.class));
+			try {
+				credential.setPassword(passwordEncoder.encode(credential.getPassword()));
+				UserRegistration userEntity = modelMapper.map(credential, UserRegistration.class);
+				UserRegistration savedUser = repository.save(userEntity);
+				return modelMapper.map(savedUser, UserDto.class);
+			} catch (Exception ex) {
+				System.out.println("Error occurred while registering user: " + ex.getMessage());
+				throw new RuntimeException("User registration failed");
+			}
 
-			mesg = "user registred successfully!";
-		} catch (Exception ex) {
-			// Exception handling with logging
-			System.out.println("Error occured during registering user " + ex.getMessage());
-		}
-		return mesg;
+
+//
+//		} catch (Exception ex) {
+//			// Exception handling with logging
+//			System.out.println("Error occured during registering user " + ex.getMessage());
+//		}
+//		return null;
 	}
 
 	/**
@@ -93,12 +111,6 @@ public class UserService {
 		return list;
 	}
 
-	/**
-	 * Updates existing user's details by their ID.
-	 * @param credential UserEdirDto DTO containing updated fields.
-	 * @param id User ID to be updated.
-	 * @return Success or failure message.
-	 */
 	public String editUserDetails(UserEdirDto credential, Long id) {
 		String msg = "User update failed!";
 		try {
@@ -107,35 +119,91 @@ public class UserService {
 					.orElseThrow(() -> new RuntimeException("User not found with ID: " + id));
 
 			// Update name, email and encoded password
-			user.setName(credential.getName());
+			user.setFirstName(credential.getFirstName());
+			user.setLastName(credential.getLastName());
 			user.setEmail(credential.getEmail());
 			user.setPassword(passwordEncoder.encode(credential.getPassword()));
 
 			// Save updated user back to DB
 			repository.save(user);
 			msg = "User updated successfully!";
-		} catch (Exception ex) {
-			System.out.println("Error updating user: " + ex.getMessage());
-		}
-		return msg;
+        } catch (Exception ex) {
+            System.out.println("Error updating user: " + ex.getMessage());
+        }
+        return msg;
+    }
+
+
+    /*
+       new endpoints added for password reset and email verification
+     */
+
+
+
+    public void changePassword(Long userId, ChangePasswordRequest req) {
+        UserRegistration user = repository.findById(userId)
+		// add a custom exception for user not found
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        if (!passwordEncoder.matches(req.getCurrentPassword(), user.getPassword())) {
+            //make a custom exception for password mismatch
+            throw new RuntimeException("Current password is incorrect");
+        }
+        user.setPassword(passwordEncoder.encode(req.getNewPassword()));
+        repository.save(user);
+    }
+
+    // public void requestPasswordReset(ForgotPasswordRequest req) {
+    //     UserRegistration user = repository.findByEmail(req.getEmail())
+    //             .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + req.getEmail()));
+    //     String token = java.util.UUID.randomUUID().toString();
+    //     passwordResetTokens.put(token, user.getId());
+    //     // TODO: send email with token
+    // }
+
+    // public void resetPassword(ResetPasswordRequest req) {
+    //     Long userId = passwordResetTokens.remove(req.getToken());
+    //     if (userId == null) throw new RuntimeException("Invalid or expired token");
+    //     UserRegistration user = repository.findById(userId)
+    //             .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+    //     user.setPassword(passwordEncoder.encode(req.getNewPassword()));
+    //     repository.save(user);
+    // }
+
+//    public void requestEmailVerification(String email) {
+//        UserRegistration user = repository.findByEmail(email)
+//                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+//        String token = java.util.UUID.randomUUID().toString();
+//        emailVerificationTokens.put(token, user.getId());
+//        // TODO: send email with token
+//    }
+//
+//    public void confirmEmailVerification(String token) {
+//        Long userId = emailVerificationTokens.remove(token);
+//        if (userId == null) throw new RuntimeException("Invalid or expired token");
+//        // no emailVerified flag in entity yet; would add in production
+//    }
+
+
+	public UserDto getById(Long id) {
+		UserRegistration user = repository.findById(id).orElseThrow(() -> new RuntimeException("User not found with ID: " + id)); //add a custom exception for user not found
+		return modelMapper.map(user, UserDto.class);
 	}
 
 	/**
-	 * Returns a specific user by their ID for admin view.
-	 * @param id The ID of the user to retrieve.
-	 * @return UserAdminDto object with complete user details.
+	 * Check if a user exists by ID - required by booking service
 	 */
-	public UserDto getById(Long id) {
-		UserRegistration user = repository.findById(id).orElseThrow(); // Throws NoSuchElementException if not found
-		return modelMapper.map(user, UserDto.class);
+	public boolean userExists(Long id) {
+		return repository.existsById(id);
 	}
 
 	public UserResDto mapToDto(UserRegistration user) {
 		return UserResDto.builder()
 				.email(user.getEmail())
 				.id(user.getId())
-				.name(user.getName())
+				.firstName(user.getFirstName())
+				.lastName(user.getLastName())
 				.userRole(user.getUserRole())
 				.build();
+
 	}
 }

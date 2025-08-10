@@ -28,7 +28,6 @@ public class AuditLog {
 
     /**
      * The type of entity that was the target of the action.
-     * Examples: "Station", "User".
      */
     private String targetEntity;
 

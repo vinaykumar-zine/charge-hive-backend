@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class UserDto {
     private Long id;
-    private String name;
+    private String firstname;
+    private String lastname;
     private String email;
-    //changed role to userRole
     private String userRole;
 }

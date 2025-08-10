@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.charginghive</groupId>
-	<artifactId>station-service</artifactId>
+	<artifactId>station</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>station-service</name>
+	<name>station</name>
 	<description>Station Service</description>
 	<url/>
 	<licenses>
@@ -52,7 +52,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>

@@ -7,18 +7,20 @@
         <option value="$PROJECT_DIR$/ApiGateway/pom.xml" />
         <option value="$PROJECT_DIR$/auth-service/pom.xml" />
         <option value="$PROJECT_DIR$/DiscoveryServer/pom.xml" />
-        <option value="$PROJECT_DIR$/test-service/pom.xml" />
-        <option value="$PROJECT_DIR$/test/pom.xml" />
-        <option value="$PROJECT_DIR$/test-service/test-service/pom.xml" />
-        <option value="$PROJECT_DIR$/admin-service/pom.xml" />
+        <option value="$PROJECT_DIR$/admin/pom.xml" />
+        <option value="$PROJECT_DIR$/station/station/pom.xml" />
+        <option value="$PROJECT_DIR$/station/pom.xml" />
+        <option value="$PROJECT_DIR$/authserver/pom.xml" />
+        <option value="$PROJECT_DIR$/auth/pom.xml" />
+        <option value="$PROJECT_DIR$/booking/pom.xml" />
         <option value="$PROJECT_DIR$/station-service/pom.xml" />
+        <option value="$PROJECT_DIR$/admin-service/pom.xml" />
         <option value="$PROJECT_DIR$/booking-service/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
-        <option value="$PROJECT_DIR$/test-service/pom.xml" />
-        <option value="$PROJECT_DIR$/test/pom.xml" />
+        <option value="$PROJECT_DIR$/booking/pom.xml" />
       </set>
     </option>
   </component>
