@@ -693,7 +693,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Documentation**: Check this README and project report
 - **Issues**: Use GitHub Issues for bug reports
 - **Discussions**: Use GitHub Discussions for questions
-- **Email**: [your-email@example.com]
+- **Email**: [vkumarzine@example.com]
 
 ### Useful Links
 
