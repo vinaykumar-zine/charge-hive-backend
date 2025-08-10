@@ -667,22 +667,6 @@ logging.level.root=WARN
 - **Feature Requests**: Provide clear use cases and requirements
 - **Security Issues**: Report privately to maintainers
 
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 👥 Team
-
-**CDAC Final Project Team**
-
-- **Project Lead**: [Your Name]
-- **Backend Development**: [Team Members]
-- **Database Design**: [Team Members]
-- **Security Implementation**: [Team Members]
 
 ---
 
@@ -693,7 +677,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Documentation**: Check this README and project report
 - **Issues**: Use GitHub Issues for bug reports
 - **Discussions**: Use GitHub Discussions for questions
-- **Email**: [vkumarzine@example.com]
+- **Email**: [vkumarzine@gmail.com]
 
 ### Useful Links
 
