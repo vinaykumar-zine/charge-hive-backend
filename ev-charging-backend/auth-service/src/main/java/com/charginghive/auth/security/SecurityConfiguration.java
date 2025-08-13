@@ -33,7 +33,6 @@ public class SecurityConfiguration {
 		return authConfig.getAuthenticationManager();
 	}
 
-
 	@Bean
 	public UserDetailsService userDetailsService(UserRepository repository) {
 		return new CustomUserDetailsService(repository);

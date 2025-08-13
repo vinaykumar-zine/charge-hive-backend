@@ -18,17 +18,5 @@ public class RestClientConfig {
         return RestClient.builder();
     }
 
-//    @Bean("userRestClient")
-//    public RestClient userRestClient() {
-//        return RestClient.builder()
-//                .baseUrl(USER_SERVICE_URL)
-//                .build();
-//    }
-//
-//    @Bean("stationRestClient")
-//    public RestClient stationRestClient() {
-//        return RestClient.builder()
-//                .baseUrl(STATION_SERVICE_URL)
-//                .build();
-//    }
+
 }

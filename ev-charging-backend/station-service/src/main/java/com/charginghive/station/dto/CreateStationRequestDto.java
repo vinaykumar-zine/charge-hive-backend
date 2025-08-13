@@ -17,10 +17,18 @@ public class CreateStationRequestDto {
     private String city;
     @NotEmpty
     private String state;
+
+    @NotNull
+    private Double latitude;
+
+    @NotNull
+    private Double longitude;
+
     @NotEmpty
     private String postalCode;
-    @NotNull
-    private Long ownerId;
+
+    private Double pricePerHour;
+
     @Valid
     private List<CreatePortRequestDto> ports;
 }

@@ -1,5 +1,6 @@
 package com.charginghive.station.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import java.util.List;
 
@@ -10,7 +11,10 @@ public class StationDto {
     private String address;
     private String city;
     private String state;
+    private Double latitude;
+    private Double longitude;
     private String postalCode;
+    private Double pricePerHour;
     private boolean isApproved;
     private Long ownerId;
     private List<StationPortDto> ports;

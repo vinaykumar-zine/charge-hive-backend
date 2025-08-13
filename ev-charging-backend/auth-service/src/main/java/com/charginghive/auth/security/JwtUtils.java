@@ -45,10 +45,11 @@ public class JwtUtils {
 		UserRegistration userPrincipal = (UserRegistration) authentication.getPrincipal();
 		
 		return Jwts.builder()
-				.subject(userPrincipal.getId().toString())
+				.subject(userPrincipal.getEmail())
 				.issuedAt(new Date())
 				.expiration(new Date(new Date().getTime() + jwtExpirationMs))
 				.claim("authorities", getAuthoritiesInString(userPrincipal.getAuthorities()))
+				.claim("user_id", userPrincipal.getId())
 				.signWith(key, Jwts.SIG.HS256)
 				.compact();
 				
