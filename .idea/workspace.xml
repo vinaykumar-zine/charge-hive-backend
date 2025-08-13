@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="e706097f-6a89-4b36-aa1e-d4fa2cd5ea48" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ev-charging-backend/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ev-charging-backend/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/bin/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/bin/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/bin/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/bin/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/bin/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/bin/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/bin/src/main/java/com/charginghive/admin/AdminApplication.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/bin/src/main/java/com/charginghive/admin/config/RestClientConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/bin/src/main/java/com/charginghive/admin/controller/AdminController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/bin/src/main/java/com/charginghive/admin/customException/UserNotFoundException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/bin/src/main/java/com/charginghive/admin/dto/AdminDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/bin/src/main/java/com/charginghive/admin/dto/StationApprovalDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/bin/src/main/java/com/charginghive/admin/dto/StationDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/bin/src/main/java/com/charginghive/admin/dto/UserDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/bin/src/main/java/com/charginghive/admin/dto/UserStatusUpdateDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/bin/src/main/java/com/charginghive/admin/model/AuditLog$AuditLogBuilder.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/bin/src/main/java/com/charginghive/admin/model/AuditLog.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/bin/src/main/java/com/charginghive/admin/repository/AuditLogRepository.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/bin/src/main/java/com/charginghive/admin/service/AdminService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/bin/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/bin/src/test/java/com/charginghive/admin/AdminApplicationTests.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/src/main/java/com/charginghive/admin/AdminApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/src/main/java/com/charginghive/admin/config/RestClientConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/src/main/java/com/charginghive/admin/controller/AdminController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/src/main/java/com/charginghive/admin/customException/UserNotFoundException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/src/main/java/com/charginghive/admin/dto/AdminDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/src/main/java/com/charginghive/admin/dto/StationApprovalDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/src/main/java/com/charginghive/admin/dto/StationDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/src/main/java/com/charginghive/admin/dto/UserDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/src/main/java/com/charginghive/admin/dto/UserStatusUpdateDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/src/main/java/com/charginghive/admin/model/AuditLog.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/src/main/java/com/charginghive/admin/repository/AuditLogRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/src/main/java/com/charginghive/admin/service/AdminService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/admin/src/test/java/com/charginghive/admin/AdminApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/apigateway/src/main/java/com/charginhive/apigateway/config/RouterValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/ev-charging-backend/apigateway/src/main/java/com/charginhive/apigateway/config/RouterValidator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/apigateway/src/main/java/com/charginhive/apigateway/filter/AuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/ev-charging-backend/apigateway/src/main/java/com/charginhive/apigateway/filter/AuthenticationFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/apigateway/src/main/java/com/charginhive/apigateway/util/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/ev-charging-backend/apigateway/src/main/java/com/charginhive/apigateway/util/JwtUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/auth-service/src/main/java/com/charginghive/auth/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ev-charging-backend/auth-service/src/main/java/com/charginghive/auth/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/auth-service/src/main/java/com/charginghive/auth/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ev-charging-backend/auth-service/src/main/java/com/charginghive/auth/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/auth-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/ev-charging-backend/auth-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/src/main/java/com/charginghive/station/StationApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/src/main/java/com/charginghive/station/config/RestClientConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/src/main/java/com/charginghive/station/controller/StationController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/src/main/java/com/charginghive/station/customException/OwnerIdMissMatchException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/src/main/java/com/charginghive/station/customException/UserNotFoundException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/src/main/java/com/charginghive/station/dto/CreatePortRequestDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/src/main/java/com/charginghive/station/dto/CreateStationRequestDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/src/main/java/com/charginghive/station/dto/StationApprovalDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/src/main/java/com/charginghive/station/dto/StationDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/src/main/java/com/charginghive/station/dto/StationPortDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/src/main/java/com/charginghive/station/dto/UserDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/src/main/java/com/charginghive/station/model/Station.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/src/main/java/com/charginghive/station/model/StationPort.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/src/main/java/com/charginghive/station/repository/StationPortRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/src/main/java/com/charginghive/station/repository/StationRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/src/main/java/com/charginghive/station/service/StationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ev-charging-backend/station/src/test/java/com/charginghive/station/StationApplicationTests.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 3
+}]]></component>
+  <component name="ProjectId" id="313nE5DrASbmHjMKS3eGxAa6B8N" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "vinay",
+    "last_opened_file_path": "E:/projects/cdac/cdac-final-project/charge-hive",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.27812.49" />
+        <option value="bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-IU-251.27812.49" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e706097f-6a89-4b36-aa1e-d4fa2cd5ea48" name="Changes" comment="" />
+      <created>1754761509111</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1754761509111</updated>
+      <workItem from="1754761510598" duration="57000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
