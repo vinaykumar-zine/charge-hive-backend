@@ -33,13 +33,16 @@ public class StationService {
     private final StationPortRepository stationPortRepository;
     private final ModelMapper modelMapper;
     private final RestClient userClient;
+    private final RestClient bookingClient;
 
-    public StationService(StationRepository repository, StationPortRepository repositoryPort, ModelMapper modelMapper, RestClient.Builder userClient) {
+    public StationService(StationRepository repository, StationPortRepository repositoryPort, ModelMapper modelMapper, RestClient.Builder userClient, RestClient.Builder bookingClient) {
            this.stationRepository = repository;
            this.stationPortRepository = repositoryPort;
            this.modelMapper = modelMapper;
            this.userClient = userClient
                    .baseUrl("http://AUTH-SERVICE")
+                   .build();
+           this.bookingClient = bookingClient.baseUrl("http://BOOKING-SERVICE")
                    .build();
     }
 
@@ -278,5 +281,18 @@ public class StationService {
         return stationRepository.findByIsApprovedTrue().stream()
                 .map(station -> modelMapper.map(station, StationDto.class))
                 .collect(Collectors.toList());
+    }
+
+    public TotalEarningRespDto getTotalEarningsFromAStaion(Long stationId) {
+        TotalEarningRespDto totalEarning = null;
+        try{
+            totalEarning = bookingClient.get().uri("/bookings/earnings/"+stationId)
+                    .retrieve()
+                    .body(TotalEarningRespDto.class);
+        }
+        catch (Exception e){
+            log.warn("Invalid station id: " + stationId);
+        }
+        return totalEarning;
     }
 }

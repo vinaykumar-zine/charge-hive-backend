@@ -3,6 +3,7 @@ package com.charginghive.booking.controller;
 import com.charginghive.booking.dto.BookingRequestDto;
 import com.charginghive.booking.dto.BookingResponseDto;
 import com.charginghive.booking.dto.BookingUpdateDto;
+import com.charginghive.booking.dto.EarningResponseDto;
 import com.charginghive.booking.entity.Status;
 import com.charginghive.booking.service.BookingService;
 import jakarta.validation.Valid;
@@ -193,5 +194,15 @@ public class BookingController {
     public ResponseEntity<List<BookingResponseDto>> getBookingsWithPayments(@PathVariable Long userId) {
         log.info("Fetching all bookings with payments for user: {}", userId);
         return ResponseEntity.ok(bookingService.getAllBookingsByUserId(userId));
+    }
+
+    /*
+    * get total earning for a station(by stationId)
+     */
+
+    @GetMapping("/earnings/{stationId}")
+    public ResponseEntity<EarningResponseDto> getTotalEaringinsForAStation(@PathVariable Long stationId){
+        log.info("fetching all bookings froma station and calculating totl earning!");
+        return ResponseEntity.ok(bookingService.getTotalEarningForAStationById(stationId));
     }
 }

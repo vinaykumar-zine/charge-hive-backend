@@ -174,4 +174,13 @@ public class StationController {
         List<StationDto> approvedStations = stationService.getApprovedStations();
         return ResponseEntity.ok(approvedStations);
     }
+
+    /**
+     * Get Total earnings for a station and total completed
+     */
+
+    @GetMapping("/totalearnings/{stationId}")
+    public ResponseEntity<TotalEarningRespDto> getTotlaEaringns(@PathVariable Long stationId){
+        return ResponseEntity.ok(stationService.getTotalEarningsFromAStaion(stationId));
+    }
 }

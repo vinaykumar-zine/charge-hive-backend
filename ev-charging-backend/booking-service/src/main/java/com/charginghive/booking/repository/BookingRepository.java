@@ -1,5 +1,6 @@
 package com.charginghive.booking.repository;
 
+import com.charginghive.booking.dto.EarningResponseDto;
 import com.charginghive.booking.entity.Booking;
 import com.charginghive.booking.entity.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -96,4 +97,15 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     
     // Count bookings by status for a station
     long countByStationIdAndStatus(Long stationId, Status status);
+
+    List<Booking> findByStatusAndEndTimeBefore(Status status, LocalDateTime now);
+
+    List<Booking> findByStatus(Status status);
+
+    @Query("SELECT COALESCE(SUM(b.totalCost), 0) " +
+            "FROM Booking b " +
+            "WHERE b.stationId = :stationId AND b.status = :status")
+    Double sumTotalCostByStationIdAndStatus(@Param("stationId") Long stationId,
+                                            @Param("status") Status status);
+
 }
