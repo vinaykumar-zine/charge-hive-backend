@@ -1,5 +1,6 @@
 package com.charginghive.booking.dto;
 
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -13,10 +14,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class BookingRequestDto {
     
-    @NotNull(message = "User ID is required")
-    @Positive(message = "User ID must be positive")
-    private Long userId;
-    
     @NotNull(message = "Station ID is required")
     @Positive(message = "Station ID must be positive")
     private Long stationId;
@@ -26,10 +23,12 @@ public class BookingRequestDto {
     private Long portId;
     
     @NotNull(message = "Start time is required")
+    @Future(message = "Start time must be in the future")
     private LocalDateTime startTime;
     
-    @NotNull(message = "End time is required")
-    private LocalDateTime endTime;
+//    @NotNull(message = "End time is required")
+//    @Future(message = "Start time must be in the future")
+//    private LocalDateTime endTime;
     
     @NotNull(message = "Duration is required")
     @Positive(message = "Duration must be positive")

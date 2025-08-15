@@ -20,6 +20,9 @@ public class StationPort {
     @Column(nullable = false)
     private String connectorType;
 
+    @Column
+    private Double pricePerHour;
+
     @NotNull(message = "Max power is required")
     @DecimalMin(value = "0.1", message = "Max power must be greater than 0")
     @Column(nullable = false)

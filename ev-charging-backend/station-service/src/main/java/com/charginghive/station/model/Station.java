@@ -4,15 +4,16 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "stations")
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Station {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,14 +42,11 @@ public class Station {
     @NotNull(message = "Longitude is required")
     private Double longitude;
 
+
     @NotBlank(message = "Postal code is required")
     @Size(min = 4, max = 20, message = "Postal code must be between 4 and 20 characters")
     @Column(nullable = false)
     private String postalCode;
-
-    // Pricing per hour in INR
-    @Column
-    private Double pricePerHour;
 
     // Set by admin; default is false
     @Column(nullable = false)

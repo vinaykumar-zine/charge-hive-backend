@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -21,7 +22,7 @@ import java.util.List;
 @RequestMapping("/bookings")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = "*")
+@Validated
 public class BookingController {
 
     private final BookingService bookingService;
@@ -30,9 +31,9 @@ public class BookingController {
      * Create a new booking
      */
     @PostMapping
-    public ResponseEntity<BookingResponseDto> createBooking(@Valid @RequestBody BookingRequestDto requestDto) {
-        log.info("Creating new booking for user: {}", requestDto.getUserId());
-        BookingResponseDto response = bookingService.createBooking(requestDto);
+    public ResponseEntity<BookingResponseDto> createBooking(@RequestHeader("X-User-Id") Long id,@RequestBody BookingRequestDto requestDto) {
+        log.info("Creating new booking for user: {}", id);
+        BookingResponseDto response = bookingService.createBooking(requestDto,id);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -58,6 +59,7 @@ public class BookingController {
 
     /**
      * Get all bookings for a station
+     * can be accessed by admin and owner only
      */
     @GetMapping("/station/{stationId}")
     public ResponseEntity<List<BookingResponseDto>> getStationBookings(@PathVariable Long stationId) {
@@ -78,8 +80,9 @@ public class BookingController {
 
     /**
      * Get bookings by status
+     *
      */
-    @GetMapping("/status/{status}")
+    @GetMapping("/admin/status/{status}")
     public ResponseEntity<List<BookingResponseDto>> getBookingsByStatus(@PathVariable Status status) {
         log.info("Fetching bookings with status: {}", status);
         List<BookingResponseDto> response = bookingService.getBookingsByStatus(status);
@@ -89,7 +92,7 @@ public class BookingController {
     /**
      * Get active bookings
      */
-    @GetMapping("/active")
+    @GetMapping("/admin/active")
     public ResponseEntity<List<BookingResponseDto>> getActiveBookings() {
         log.info("Fetching active bookings");
         List<BookingResponseDto> response = bookingService.getActiveBookings();
@@ -121,7 +124,7 @@ public class BookingController {
     /**
      * Complete booking
      */
-    @PutMapping("/{bookingId}/complete")
+    @PutMapping("/admin/{bookingId}/complete")
     public ResponseEntity<BookingResponseDto> completeBooking(@PathVariable Long bookingId) {
         log.info("Completing booking with ID: {}", bookingId);
         BookingResponseDto response = bookingService.completeBooking(bookingId);
@@ -151,7 +154,7 @@ public class BookingController {
     /**
      * Get bookings in date range
      */
-    @GetMapping("/date-range")
+    @GetMapping("/admin/date-range")
     public ResponseEntity<List<BookingResponseDto>> getBookingsInDateRange(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
@@ -198,9 +201,10 @@ public class BookingController {
 
     /*
     * get total earning for a station(by stationId)
+    * access only by admin
      */
 
-    @GetMapping("/earnings/{stationId}")
+    @GetMapping("/admin/earnings/{stationId}")
     public ResponseEntity<EarningResponseDto> getTotalEaringinsForAStation(@PathVariable Long stationId){
         log.info("fetching all bookings froma station and calculating totl earning!");
         return ResponseEntity.ok(bookingService.getTotalEarningForAStationById(stationId));

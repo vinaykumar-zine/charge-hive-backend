@@ -26,6 +26,6 @@ public class StationInfoDto {
         private Long id;
         private String connectorType;
         private Double maxPowerKw;
-        private Long stationId;
+        private Double pricePerHour;
     }
 }

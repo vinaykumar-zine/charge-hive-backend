@@ -31,32 +31,35 @@ public class BookingService {
     private final ModelMapper modelMapper;
 
     // Constants for pricing
-    private static final double BASE_RATE_PER_HOUR = 2.50; // $2.50 per hour
-    private static final double POWER_MULTIPLIER = 0.10; // $0.10 per kW
+//    private static final double BASE_RATE_PER_HOUR = 2.50; // $2.50 per hour
+//    private static final double POWER_MULTIPLIER = 0.10; // $0.10 per kW
 
     /**
      * Create a new booking
      */
-    public BookingResponseDto createBooking(BookingRequestDto requestDto) {
+    public BookingResponseDto createBooking(BookingRequestDto requestDto,Long userId) {
         log.info("Creating booking for user: {}, station: {}, port: {}",
-                requestDto.getUserId(), requestDto.getStationId(), requestDto.getPortId());
+                userId, requestDto.getStationId(), requestDto.getPortId());
 
+        // Calculate end time
+        LocalDateTime endTime = requestDto.getStartTime().plusMinutes(requestDto.getDuration());
         // Validate request
-        validateBookingRequest(requestDto);
+        validateBookingRequest(requestDto,userId,endTime);
 
         // Check if port is available
-        if (isPortBooked(requestDto.getPortId(), requestDto.getStartTime(), requestDto.getEndTime())) {
+        if (isPortBooked(requestDto.getPortId(), requestDto.getStartTime(), endTime)) {
             throw new BookingException("Port is not available for the specified time range");
         }
 
         // Calculate cost
-        double totalCost = calculateBookingCost(requestDto);
+//        double totalCost = calculateBookingCost(requestDto);
+        double totalCost = calculateBookingCost(requestDto.getStationId(),requestDto.getPortId(),requestDto.getDuration());
 
         // Create booking entity
-        Booking booking = Booking.builder().userId(requestDto.getUserId()).stationId(requestDto.getStationId()).
+        Booking booking = Booking.builder().userId(userId).stationId(requestDto.getStationId()).
                 portId(requestDto.getPortId()).
                 startTime(requestDto.getStartTime()).
-                endTime(requestDto.getEndTime()).
+                endTime(endTime).
                 duration(requestDto.getDuration()).
                 totalCost(totalCost).
                 status(Status.BOOKED).build();
@@ -164,7 +167,7 @@ public class BookingService {
 
         // Recalculate cost if time changed
         if (updateDto.getStartTime() != null || updateDto.getEndTime() != null || updateDto.getDuration() != null) {
-            double newCost = calculateBookingCost(booking);
+            double newCost = calculateBookingCost(booking.getStationId(),booking.getPortId(),booking.getDuration());
             booking.setTotalCost(newCost);
         }
 
@@ -273,22 +276,22 @@ public class BookingService {
 
     // Private helper methods
 
-    private void validateBookingRequest(BookingRequestDto requestDto) {
+    private void validateBookingRequest(BookingRequestDto requestDto,Long userId,LocalDateTime endTime) {
         // Validate time constraints
         if (requestDto.getStartTime().isBefore(LocalDateTime.now())) {
             throw new BookingException("Start time cannot be in the past");
         }
 
-        if (requestDto.getEndTime().isBefore(requestDto.getStartTime())) {
+        if (endTime.isBefore(requestDto.getStartTime())) {
             throw new BookingException("End time must be after start time");
         }
 
-        if (requestDto.getStartTime().equals(requestDto.getEndTime())) {
+        if (requestDto.getStartTime().equals(endTime)) {
             throw new BookingException("Start time and end time cannot be the same");
         }
 
         // Validate duration
-        long actualDuration = ChronoUnit.MINUTES.between(requestDto.getStartTime(), requestDto.getEndTime());
+        long actualDuration = ChronoUnit.MINUTES.between(requestDto.getStartTime(), endTime);
         if (actualDuration != requestDto.getDuration()) {
             throw new BookingException("Duration does not match the time range");
         }
@@ -304,7 +307,7 @@ public class BookingService {
         }
 
         // Validate user exists
-        if (!externalService.validateUserExists(requestDto.getUserId())) {
+        if (!externalService.validateUserExists(userId)) {
             throw new BookingException("User does not exist");
         }
 
@@ -318,33 +321,50 @@ public class BookingService {
         return bookingRepository.isPortBooked(portId, startTime, endTime);
     }
 
-    private double calculateBookingCost(BookingRequestDto requestDto) {
-        // Get port information to calculate cost based on power
-        StationInfoDto.PortInfo portInfo = externalService.getPortInfo(requestDto.getStationId(), requestDto.getPortId());
+//    private double calculateBookingCost(BookingRequestDto requestDto) {
+//        // Get port information to calculate cost based on power
+//        StationInfoDto.PortInfo portInfo = externalService.getPortInfo(requestDto.getStationId(), requestDto.getPortId());
+//
+//        // Calculate hours
+//        double hours = requestDto.getDuration() / 60.0;
+//
+//        // Base cost + power-based cost
+//        double baseCost = BASE_RATE_PER_HOUR * hours;
+//        double powerCost = portInfo.getMaxPowerKw() * POWER_MULTIPLIER * hours;
+//
+//        return baseCost + powerCost;
+//    }
+       private double calculateBookingCost(Long stationId, Long portId,Integer duration) {
 
-        // Calculate hours
-        double hours = requestDto.getDuration() / 60.0;
+           StationInfoDto.PortInfo portInfo = externalService.getPortInfo(stationId,portId);
 
-        // Base cost + power-based cost
-        double baseCost = BASE_RATE_PER_HOUR * hours;
-        double powerCost = portInfo.getMaxPowerKw() * POWER_MULTIPLIER * hours;
 
-        return baseCost + powerCost;
-    }
+           if (portInfo == null || portInfo.getPricePerHour() == null) {
+               log.error("Could not retrieve price information for port {} at station {}",
+                       portId, stationId);
+               throw new IllegalStateException("Unable to calculate cost: price information is missing.");
+           }
 
-    private double calculateBookingCost(Booking booking) {
-        // Get port information
-        StationInfoDto.PortInfo portInfo = externalService.getPortInfo(booking.getStationId(), booking.getPortId());
+           double hours = duration / 60.0;
 
-        // Calculate hours
-        double hours = booking.getDuration() / 60.0;
+           double finalCost = portInfo.getPricePerHour() * hours;
 
-        // Base cost + power-based cost
-        double baseCost = BASE_RATE_PER_HOUR * hours;
-        double powerCost = portInfo.getMaxPowerKw() * POWER_MULTIPLIER * hours;
+           return finalCost;
+       }
 
-        return baseCost + powerCost;
-    }
+//    private double calculateBookingCost(Booking booking) {
+//        // Get port information
+//        StationInfoDto.PortInfo portInfo = externalService.getPortInfo(booking.getStationId(), booking.getPortId());
+//
+//        // Calculate hours
+//        double hours = booking.getDuration() / 60.0;
+//
+//        // Base cost + power-based cost
+//        double baseCost = BASE_RATE_PER_HOUR * hours;
+//        double powerCost = portInfo.getMaxPowerKw() * POWER_MULTIPLIER * hours;
+//
+//        return baseCost + powerCost;
+//    }
 
     private BookingResponseDto convertToResponseDto(Booking booking) {
         BookingResponseDto responseDto = modelMapper.map(booking, BookingResponseDto.class);

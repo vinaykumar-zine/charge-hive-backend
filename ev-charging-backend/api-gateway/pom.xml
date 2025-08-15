@@ -11,9 +11,9 @@
 	</parent>
 
 	<groupId>com.charginghive.server</groupId>
-	<artifactId>apiGateway</artifactId>
+	<artifactId>api-gateway</artifactId>
 	<version>0</version>
-	<name>apiGateway</name>
+	<name>api-gateway</name>
 	<description>Api-Gateway</description>
 
 	<properties>

@@ -11,7 +11,7 @@
 	<groupId>com.charginghive.server</groupId>
 	<artifactId>discovery-server</artifactId>
 	<version>0</version>
-	<name>DiscoveryServer</name>
+	<name>discovery-server</name>
 	<description>service registrary!</description>
 	<url/>
 	<licenses>

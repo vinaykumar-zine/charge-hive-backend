@@ -1,5 +1,6 @@
 package com.charginghive.station.service;
 
+import com.charginghive.station.customException.NotFoundException;
 import com.charginghive.station.customException.OwnerIdMissMatchException;
 import com.charginghive.station.customException.UserNotFoundException;
 import com.charginghive.station.dto.*;
@@ -8,6 +9,7 @@ import com.charginghive.station.model.StationPort;
 import com.charginghive.station.repository.StationPortRepository;
 import com.charginghive.station.repository.StationRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -18,14 +20,11 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
 @Service
-//@RequiredArgsConstructor
 @Slf4j
 public class StationService {
 
@@ -35,18 +34,16 @@ public class StationService {
     private final RestClient userClient;
     private final RestClient bookingClient;
 
-    public StationService(StationRepository repository, StationPortRepository repositoryPort, ModelMapper modelMapper, RestClient.Builder userClient, RestClient.Builder bookingClient) {
-           this.stationRepository = repository;
-           this.stationPortRepository = repositoryPort;
-           this.modelMapper = modelMapper;
-           this.userClient = userClient
-                   .baseUrl("http://AUTH-SERVICE")
-                   .build();
-           this.bookingClient = bookingClient.baseUrl("http://BOOKING-SERVICE")
-                   .build();
+    public StationService(StationRepository repository, StationPortRepository repositoryPort, ModelMapper modelMapper, RestClient.Builder Client) {
+        this.stationRepository = repository;
+        this.stationPortRepository = repositoryPort;
+        this.modelMapper = modelMapper;
+        this.userClient = Client
+                .baseUrl("http://AUTH-SERVICE")
+                .build();
+        this.bookingClient = Client.baseUrl("http://BOOKING-SERVICE")
+                .build();
     }
-
-
 
     @Transactional
     public StationDto createStation(CreateStationRequestDto requestDto,Long ownerId) {
@@ -55,7 +52,7 @@ public class StationService {
         if(!verifyUserExists(ownerId)) {
             throw new UserNotFoundException("Owner not found with id "+ownerId);
         }
-         log.info("Station info {}.", requestDto);
+        log.info("Station info {}.", requestDto);
         //Use ModelMapper to map the basic properties
         Station station = modelMapper.map(requestDto, Station.class);
         station.setOwnerId(ownerId);
@@ -71,30 +68,26 @@ public class StationService {
         }
 
         Station savedStation = stationRepository.save(station);
-        return modelMapper.map(station, StationDto.class);
+        return modelMapper.map(savedStation, StationDto.class);
     }
 
-    public List<StationDto> getAllStations() {
-        return stationRepository.findAll().stream()
-                .map(station -> modelMapper.map(station, StationDto.class)).toList();
-    }
-
-    public StationDto getStationById(Long id) {
+    // fetch a station by id
+    @Transactional
+    public StationDto getStation(Long id) {
         Station station = stationRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Station not found with id: " + id));
-        return modelMapper.map(station, StationDto.class);
+                .orElseThrow(() -> new NotFoundException("Station not found with id=" + id));
+        return toDto(station);
     }
 
-    public List<StationDto> getUnapprovedStations() {
-        return stationRepository.findByIsApprovedFalse().stream()
-                .map(station -> modelMapper.map(station, StationDto.class)).toList();
-    }
 
-    public List<StationDto> getStationsByOwner(Long ownerId) {
-        return stationRepository.findByOwnerId(ownerId)
-                .stream().map(station -> modelMapper.map(station, StationDto.class)).toList();
+    @Transactional
+    public StationDto updateStation(Long id, @Valid UpdateStationRequestDto update) {
+        Station station = stationRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Station not found with id=" + id));
+        modelMapper.map(update, station); // only non-null fields copied due to global config
+        Station saved = stationRepository.save(station);
+        return toDto(saved);
     }
-
 
     @Transactional
     public void updateStationStatus(StationApprovalDto approvalDto) {
@@ -106,54 +99,67 @@ public class StationService {
     }
 
     @Transactional
-    public void deleteStation(Long stationId, Long ownerId)throws OwnerIdMissMatchException ,EntityNotFoundException{
-            Station station = stationRepository.findById(stationId).orElseThrow(() -> new EntityNotFoundException("Station not found with id: " + stationId));
-            if(!ownerId.equals(station.getOwnerId())){
-                throw new OwnerIdMissMatchException("Station does not belong to the owner");
-            }
-            stationRepository.deleteById(stationId);
+    public void deleteStation(Long id) {
+        Station station = stationRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Station not found with id=" + id));
+        stationRepository.delete(station);
+    }
+
+    public List<StationDto> getAllStations() {
+        return stationRepository.findAll().stream()
+                .map(station -> modelMapper.map(station, StationDto.class)).toList();
+    }
+
+
+    @Transactional
+    public List<StationDto> getByOwner(Long ownerId) {
+        return stationRepository.findByOwnerId(ownerId).stream().map(this::toDto).toList();
     }
 
     @Transactional
-    public void deletePort(Long portId) {
-        if (!stationPortRepository.existsById(portId)) {
-            throw new EntityNotFoundException("Station Port not found with id: " + portId);
-        }
-        stationPortRepository.deleteById(portId);
-    }
-
-    @Transactional
-    public StationDto updateStation(Long ownerId, Long stationId, UpdateStationRequestDto dto) {
+    public StationPortDto addPort(Long stationId, @Valid CreatePortRequestDto request) {
         Station station = stationRepository.findById(stationId)
-                .orElseThrow(() -> new EntityNotFoundException("Station not found with id: " + stationId));
-        if (!ownerId.equals(station.getOwnerId())) {
-            throw new OwnerIdMissMatchException("Station does not belong to the owner");
-        }
-        station.setName(dto.getName());
-        station.setAddress(dto.getAddress());
-        station.setCity(dto.getCity());
-        station.setState(dto.getState());
-        station.setPostalCode(dto.getPostalCode());
-        station.setLatitude(dto.getLatitude());
-        station.setLongitude(dto.getLongitude());
-        station.setPricePerHour(dto.getPricePerHour());
-        Station saved = stationRepository.save(station);
-        return modelMapper.map(saved, StationDto.class);
-    }
-
-    @Transactional
-    public StationDto addPort(Long ownerId, Long stationId, CreatePortRequestDto dto) {
-        Station station = stationRepository.findById(stationId)
-                .orElseThrow(() -> new EntityNotFoundException("Station not found with id: " + stationId));
-        if (!ownerId.equals(station.getOwnerId())) {
-            throw new OwnerIdMissMatchException("Station does not belong to the owner");
-        }
-        StationPort port = modelMapper.map(dto, StationPort.class);
+                .orElseThrow(() -> new NotFoundException("Station not found with id=" + stationId));
+        StationPort port = new StationPort();
+        port.setConnectorType(request.getConnectorType());
+        port.setMaxPowerKw(request.getMaxPowerKw());
+        port.setPricePerHour(request.getPricePerHour());
         port.setStation(station);
-        station.getPorts().add(port);
-        Station saved = stationRepository.save(station);
-        return modelMapper.map(saved, StationDto.class);
+        StationPort saved = stationPortRepository.save(port);
+        // maintain the relationship on the owner side
+        station.getPorts().add(saved);
+        return modelMapper.map(saved, StationPortDto.class);
     }
+
+    @Transactional
+    public List<StationPortDto> listPorts(Long stationId) {
+        Station station = stationRepository.findById(stationId)
+                .orElseThrow(() -> new NotFoundException("Station not found with id=" + stationId));
+        return station.getPorts().stream().map(p -> modelMapper.map(p, StationPortDto.class)).toList();
+    }
+
+    public List<StationDto> getUnapprovedStations() {
+        return stationRepository.findByIsApprovedFalse().stream()
+                .map(station -> modelMapper.map(station, StationDto.class)).toList();
+    }
+
+
+    @Transactional
+    public void removePort(Long stationId, Long portId) {
+        Station station = stationRepository.findById(stationId)
+                .orElseThrow(() -> new NotFoundException("Station not found with id=" + stationId));
+
+        Optional<StationPort> portOpt = station.getPorts().stream()
+                .filter(p -> portId.equals(p.getId()))
+                .findFirst();
+
+        StationPort port = portOpt.orElseThrow(() ->
+                new NotFoundException("Port not found with id=" + portId + " for station id=" + stationId));
+
+        station.getPorts().remove(port);
+        stationPortRepository.delete(port);
+    }
+
 
     @Transactional
     public StationDto updatePort(Long ownerId, Long portId, CreatePortRequestDto dto) {
@@ -169,12 +175,12 @@ public class StationService {
         return modelMapper.map(station, StationDto.class);
     }
 
-    public List<StationDto> searchStations(String query, String city, Double minPrice, Double maxPrice, Boolean available) {
+
+
+    public List<StationDto> searchStations(String query, String city,Boolean available) {
         return stationRepository.findAll().stream()
                 .filter(s -> query == null || s.getName().toLowerCase().contains(query.toLowerCase()))
                 .filter(s -> city == null || s.getCity().equalsIgnoreCase(city))
-                .filter(s -> minPrice == null || (s.getPricePerHour() != null && s.getPricePerHour() >= minPrice))
-                .filter(s -> maxPrice == null || (s.getPricePerHour() != null && s.getPricePerHour() <= maxPrice))
                 // available flag could check ports size > 0 for now
                 .filter(s -> available == null || (available && !s.getPorts().isEmpty()) || (!available))
                 .map(s -> modelMapper.map(s, StationDto.class))
@@ -182,17 +188,19 @@ public class StationService {
     }
 
     public List<StationDto> findNearby(double lat, double lng, double radiusKm) {
-        final double earthRadiusKm = 6371.0;
-        return stationRepository.findAll().stream()
-                .filter(Station::isApproved)
-                .map(s -> new Object[]{s, distanceKm(lat, lng, s.getLatitude(), s.getLongitude(), earthRadiusKm)})
+        List<StationDto> filterStations =  stationRepository.findAll().stream()
+                .map(s -> new Object[]{s, distanceKm(lat, lng, s.getLatitude(), s.getLongitude())})
                 .filter(arr -> (double) arr[1] <= radiusKm)
                 .sorted(Comparator.comparingDouble(a -> (double) a[1]))
                 .map(arr -> modelMapper.map((Station) arr[0], StationDto.class))
                 .collect(Collectors.toList());
+
+        log.info("Found {} stations in range of {} km", filterStations, radiusKm);
+
+        return filterStations;
     }
 
-    private double distanceKm(double lat1, double lon1, Double lat2, Double lon2, double R) {
+    private double distanceKm(double lat1, double lon1, Double lat2, Double lon2) {
         if (lat2 == null || lon2 == null) return Double.MAX_VALUE;
         double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lon2 - lon1);
@@ -200,11 +208,10 @@ public class StationService {
                 + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
                 * Math.sin(dLon / 2) * Math.sin(dLon / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c;
+        return 6371.0 * c;
     }
 
     public List<String> getAvailability(Long stationId, String dateIso) {
-        // Placeholder: return every 30 min between 08:00 and 20:00 as available
         LocalDate date = LocalDate.parse(dateIso, DateTimeFormatter.ISO_DATE);
         List<String> slots = new ArrayList<>();
         LocalTime t = LocalTime.of(8, 0);
@@ -216,27 +223,41 @@ public class StationService {
         return slots;
     }
 
-      private boolean verifyUserExists(Long ownerId) {
 
-          try {
-              UserDto user = userClient.get()
-                      .uri("auth/get-by-id/{id}", ownerId)
-                      //if any 4xx or 5xx status is received then .retrieve()
-                      //throw exception
-                      .retrieve()
-                      .body(UserDto.class);
 
-              if (user == null) {
-                  throw new UserNotFoundException("Received an empty response for admin ID: " + ownerId);
-              }
-          } catch (WebClientResponseException e) {
-              throw new UserNotFoundException("Admin user with ID " + ownerId + " not found.");
-          }
+
+
+    // added: helper mapping to StationDto including ports
+    private StationDto toDto(Station station) {
+        StationDto dto = modelMapper.map(station, StationDto.class);
+        if (station.getPorts() != null) {
+            dto.setPorts(station.getPorts().stream()
+                    .map(p -> modelMapper.map(p, StationPortDto.class))
+                    .toList());
+        }
+        return dto;
+    }
+    private boolean verifyUserExists(Long ownerId) {
+
+        try {
+            UserDto user = userClient.get()
+                    .uri("auth/get-by-id/{id}", ownerId)
+                    //if any 4xx or 5xx status is received then .retrieve()
+                    //throw exception
+                    .retrieve()
+                    .body(UserDto.class);
+
+            if (user == null) {
+                throw new UserNotFoundException("Received an empty response for admin ID: " + ownerId);
+            }
+        } catch (WebClientResponseException e) {
+            throw new UserNotFoundException("Admin user with ID " + ownerId + " not found.");
+        }
 
         return true;
-      }
+    }
 
-    // --- Methods for Booking Service Integration ---
+
 
     /**
      * Check if a station exists
@@ -252,13 +273,13 @@ public class StationService {
         // First check if station exists
         Station station = stationRepository.findById(stationId)
                 .orElseThrow(() -> new EntityNotFoundException("Station not found with id: " + stationId));
-        
+
         // Find the port in this station
         StationPort port = station.getPorts().stream()
                 .filter(p -> p.getId().equals(portId))
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException("Port not found with id: " + portId + " in station: " + stationId));
-        
+
         return modelMapper.map(port, StationPortDto.class);
     }
 
@@ -268,7 +289,7 @@ public class StationService {
     public List<StationPortDto> getStationPorts(Long stationId) {
         Station station = stationRepository.findById(stationId)
                 .orElseThrow(() -> new EntityNotFoundException("Station not found with id: " + stationId));
-        
+
         return station.getPorts().stream()
                 .map(port -> modelMapper.map(port, StationPortDto.class))
                 .collect(Collectors.toList());
@@ -295,4 +316,6 @@ public class StationService {
         }
         return totalEarning;
     }
+
+
 }
